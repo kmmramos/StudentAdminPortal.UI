@@ -18,7 +18,7 @@ export class StudentService {
   }
 
   getStudent(studentId: string): Observable<Student> {
-    return this.httpClient.get<Student>(this.baseApiUrl+'/students/' + studentId)
+    return this.httpClient.get<Student>(this.baseApiUrl +'/students/' + studentId)
   }
 
   updateStudent(studentId: string, studentRequest: Student): Observable<Student>{
@@ -37,5 +37,10 @@ export class StudentService {
 
     return this.httpClient.put<Student>(this.baseApiUrl + '/students/' + studentId, updateStudentRequest);
 
+  }
+
+  deleteStudent(studentId: string): Observable<Student> {
+    console.log('pasok!1');
+    return this.httpClient.delete<Student>(this.baseApiUrl + '/students/' + studentId)
   }
 }
