@@ -33,6 +33,9 @@ export class ViewStudentComponent implements OnInit {
     }
   }
 
+  isNewStudent = false;
+  header = '';
+
   genderList: Gender[] = [];
 
   constructor(private readonly studentService: StudentService,
@@ -48,18 +51,30 @@ export class ViewStudentComponent implements OnInit {
         this.studentId = params.get('id'); 
 
         if(this.studentId) {
-          this.studentService.getStudent(this.studentId)
+          if(this.studentId.toLowerCase() === 'Add'.toLowerCase()) {
+            //if the route contains the keyword 'Add'
+            // -> new student functionality
+            this.isNewStudent = true;
+            this.header = 'Add New Student';
+
+          } else {
+            //otherwise
+            // -> existing student functionality
+            this.isNewStudent = false;
+            this.header = 'Edit Student';
+
+            this.studentService.getStudent(this.studentId)
             .subscribe(
               (successResponse) => {
                 this.student = successResponse;
               }
             );
+          }
 
           this.genderService.getGenderList()
             .subscribe(
               (successResponse) => {
                 this.genderList = successResponse;
-                console.log(this.genderList[0].description);
               }
             );
         }
@@ -83,7 +98,6 @@ export class ViewStudentComponent implements OnInit {
   }
 
   onDelete(): void {
-    console.log('pasok!');
     this.studentService.deleteStudent(this.student.id)
     .subscribe(
       (successResponse) => {
@@ -96,6 +110,24 @@ export class ViewStudentComponent implements OnInit {
       },
       (errorMessage) => {
         //Log
+      }
+    )
+  }
+
+  onAdd(): void {
+    this.studentService.addStudent(this.student)
+    .subscribe(
+      (successResponse) => {
+        this.snackbar.open('Student added successfully', undefined, {
+          duration: 2000
+        });
+
+        setTimeout(() => {
+          this.router.navigateByUrl(`students/${successResponse.id}`);
+        }, 2000); 
+      },
+      (errorResponse) => {
+        console.log(errorResponse);
       }
     )
   }

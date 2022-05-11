@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AddStudentRequest } from '../models/api-models/add-student-request.model';
 import { Student } from '../models/api-models/student.model';
 import { UpdateStudentRequest } from '../models/api-models/update-student-request.model';
 
@@ -22,8 +23,6 @@ export class StudentService {
   }
 
   updateStudent(studentId: string, studentRequest: Student): Observable<Student>{
-    console.log(studentRequest.address.physicalAddress);
-    console.log(studentRequest.genderId);
     const updateStudentRequest: UpdateStudentRequest = {
       firstName: studentRequest.firstName,
       lastName: studentRequest.lastName,
@@ -33,14 +32,29 @@ export class StudentService {
       genderId: studentRequest.gender.id,
       physicalAddress: studentRequest.address.physicalAddress,
       postalAddress: studentRequest.address.postalAddress
-    }
+    };
 
     return this.httpClient.put<Student>(this.baseApiUrl + '/students/' + studentId, updateStudentRequest);
 
   }
 
   deleteStudent(studentId: string): Observable<Student> {
-    console.log('pasok!1');
     return this.httpClient.delete<Student>(this.baseApiUrl + '/students/' + studentId)
+  }
+
+  addStudent(studentRequest: Student): Observable<Student> {
+    const addStudentRequest: AddStudentRequest = {
+      firstName: studentRequest.firstName,
+      lastName: studentRequest.lastName,
+      dateOfBirth: studentRequest.dateOfBirth,
+      email: studentRequest.email,
+      mobile: studentRequest.mobile,
+      genderId: studentRequest.gender.id,
+      physicalAddress: studentRequest.address.physicalAddress,
+      postalAddress: studentRequest.address.postalAddress
+    };
+
+    return this.httpClient.post<Student>(this.baseApiUrl + '/students/add', addStudentRequest);
+
   }
 }
